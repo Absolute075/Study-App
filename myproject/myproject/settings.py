@@ -1,29 +1,21 @@
-from typing import Any
+
 from pathlib import Path
 import os
 
-BASE_DIR: Any = Path(__file__).resolve().parent.parent
+# Build paths inside the project like this: BASE_DIR / 'subdir'.
+BASE_DIR = Path(__file__).resolve().parent.parent
 
+# Static files (CSS, JavaScript, Images)
 STATIC_URL = '/static/'
-STATIC_ROOT = BASE_DIR / 'staticfiles'
-
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
-
-
+# Quick-start development settings - unsuitable for production
 SECRET_KEY = 'django-insecure-zmh04bp-a+fxk%jnd-kg@5kwn=tc)8wwc%pk25cqxjd@sc5_o8'
-
 DEBUG = True
-
 ALLOWED_HOSTS = ['study-app-a53x.onrender.com']
 
-
-
-
-
-
 # Application definition
-
 INSTALLED_APPS = [
     'jazzmin',
     'django.contrib.admin',
@@ -36,12 +28,11 @@ INSTALLED_APPS = [
     'api',
     'accounts',
     'logs',
-
-
 ]
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -49,20 +40,10 @@ MIDDLEWARE = [
     'accounts.middleware.BlockedUserMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-
-    # твой middleware
     'middleware.mymiddleware.MyMiddleware',
 ]
 
-
-
 ROOT_URLCONF = 'myproject.urls'
-
-
-
-from pathlib import Path
-
-BASE_DIR = Path(__file__).resolve().parent.parent
 
 TEMPLATES = [
     {
@@ -80,115 +61,65 @@ TEMPLATES = [
     },
 ]
 
+WSGI_APPLICATION = 'myproject.wsgi.application'
 
+# Database
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.sqlite3',  # или PostgreSQL при подключении
+        'NAME': BASE_DIR / 'db.sqlite3',
+    }
+}
 
+# Password validation
+AUTH_PASSWORD_VALIDATORS = [
+    {'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator'},
+    {'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator'},
+    {'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator'},
+    {'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator'},
+]
 
+# Internationalization
+LANGUAGE_CODE = 'ru'
+TIME_ZONE = 'Asia/Tashkent'
+USE_I18N = True
+USE_TZ = True
 
+# Default primary key field type
+DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+# Jazzmin settings
 JAZZMIN_SETTINGS = {
     "site_title": "Учебная панель ProLearner",
     "site_header": "Панель администратора ProLearner",
     "site_brand": "ProLearner",
     "welcome_sign": "Добро пожаловать в панель администратора ProLearner!",
     "site_footer": "© 2025 ProLearner — Все права защищены",
-
     "search_model": ["auth.User", "auth.Group"],
-
     "icons": {
         "auth": "fas fa-users",
         "auth.user": "fas fa-user-graduate",
         "auth.group": "fas fa-chalkboard-teacher",
     },
-
     "menu": [
-    {"model": "admin.logentry", "name": "Логи действий (Системные)", "icon": "fas fa-history"},
-    {"model": "logs.actionlog", "name": "Логи действий (Пользовательские)", "icon": "fas fa-clipboard-list"},
-    {
-        "name": "Дашборд",
-        "url": "/admin/dashboard/",
-        "icon": "fas fa-chart-bar",
-        "permissions": ["is_superuser"],  # Добавляем, чтобы видели только админы
-    },
-],
-
-
+        {"model": "admin.logentry", "name": "Логи действий (Системные)", "icon": "fas fa-history"},
+        {"model": "logs.actionlog", "name": "Логи действий (Пользовательские)", "icon": "fas fa-clipboard-list"},
+        {
+            "name": "Дашборд",
+            "url": "/admin/dashboard/",
+            "icon": "fas fa-chart-bar",
+            "permissions": ["is_superuser"],
+        },
+    ],
     "order_with_respect_to": ["auth", "courses", "grades"],
-
     "theme": "flatly",
-
     "custom_links": {
         "auth": [
-            {
-                "name": "Добавить студента",
-                "url": "/admin/auth/user/add/",
-                "icon": "fas fa-user-plus",
-            },
-            {
-                "name": "Добавить группу",
-                "url": "/admin/auth/group/add/",
-                "icon": "fas fa-plus-circle",
-            },
+            {"name": "Добавить студента", "url": "/admin/auth/user/add/", "icon": "fas fa-user-plus"},
+            {"name": "Добавить группу", "url": "/admin/auth/group/add/", "icon": "fas fa-plus-circle"},
         ]
     },
 }
 
-
-
 LOGIN_REDIRECT_URL = '/admin/'
 
-
-
-WSGI_APPLICATION = 'myproject.wsgi.application'
-
-
-# Database
-# https://docs.djangoproject.com/en/5.2/ref/settings/#databases
-
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
-    }
-}
-
-
-# Password validation
-# https://docs.djangoproject.com/en/5.2/ref/settings/#auth-password-validators
-
-AUTH_PASSWORD_VALIDATORS = [
-    {
-        'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
-    },
-]
-
-
-
-
-# Internationalization
-# https://docs.djangoproject.com/en/5.2/topics/i18n/
-
-LANGUAGE_CODE = 'ru'
-
-TIME_ZONE = 'Asia/Tashkent'
-
-USE_I18N = True
-
-USE_TZ = True
-
-
-# Static files (CSS, JavaScript, Images)
-# https://docs.djangoproject.com/en/5.2/howto/static-files/
-
-
-# Default primary key field type
-# https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
-
-DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
