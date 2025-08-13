@@ -37,3 +37,6 @@ android/app/debug
 android/app/profile
 android/app/release
 
+#путь к WSGI-приложению
+web: gunicorn myproject.wsgi:application
+
