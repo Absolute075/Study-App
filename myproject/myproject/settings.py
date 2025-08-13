@@ -1,21 +1,20 @@
 from typing import Any
-
 from pathlib import Path
+import os
 
-# Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR: Any = Path(__file__).resolve().parent.parent
 
+STATIC_URL = '/static/'
+STATIC_ROOT = str(os.path.join(BASE_DIR, 'staticfiles'))  # привели к строке
 
-# Quick-start development settings - unsuitable for production
-# See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
-
-# SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = 'django-insecure-zmh04bp-a+fxk%jnd-kg@5kwn=tc)8wwc%pk25cqxjd@sc5_o8'
 
-# SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
 ALLOWED_HOSTS = ['192.168.100.145', '127.0.0.1', 'localhost']
+
+
+
 
 
 
