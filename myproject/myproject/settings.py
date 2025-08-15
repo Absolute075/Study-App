@@ -28,6 +28,7 @@ INSTALLED_APPS = [
     'api',
     'accounts',
     'logs.apps.LogsConfig'
+    'userlogs'
 ]
 
 MIDDLEWARE = [
