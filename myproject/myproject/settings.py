@@ -66,10 +66,17 @@ WSGI_APPLICATION = 'myproject.wsgi.application'
 # Database
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',  # или PostgreSQL при подключении
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'postgres',  # имя базы в Supabase
+        'USER': 'postgres.cozecdjfnbhdndcivcvs',  # пользователь базы
+        'PASSWORD': 'star4536446',  # пароль пользователя
+        'HOST': 'aws-1-eu-central-1.pooler.supabase.com',  # Pooler host
+        'PORT': '6543',  # Pooler port
     }
 }
+
+
+
 
 # Password validation
 AUTH_PASSWORD_VALIDATORS = [
