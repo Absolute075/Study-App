@@ -29,7 +29,7 @@ INSTALLED_APPS = [
     'accounts',
     'logs.apps.LogsConfig',
     'userlogs',
-    
+
 ]
 
 MIDDLEWARE = [

@@ -8,6 +8,9 @@
       <excludeFolder url="file://$MODULE_DIR$/build" />
       <excludeFolder url="file://$MODULE_DIR$/ios/Flutter/ephemeral" />
       <excludeFolder url="file://$MODULE_DIR$/venv" />
+      <excludeFolder url="file://$MODULE_DIR$/my_app/.dart_tool" />
+      <excludeFolder url="file://$MODULE_DIR$/my_app/.pub" />
+      <excludeFolder url="file://$MODULE_DIR$/my_app/build" />
     </content>
     <orderEntry type="jdk" jdkName="Python 3.13 (Study_App)" jdkType="Python SDK" />
     <orderEntry type="sourceFolder" forTests="false" />
