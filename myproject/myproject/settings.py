@@ -27,8 +27,9 @@ INSTALLED_APPS = [
     'rest_framework',
     'api',
     'accounts',
-    'logs.apps.LogsConfig'
-    'userlogs'
+    'logs.apps.LogsConfig',
+    'userlogs',
+    
 ]
 
 MIDDLEWARE = [
