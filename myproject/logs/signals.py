@@ -1,15 +1,15 @@
 
-from django.db.models.signals import post_save, post_delete
+from django.db.models.signals import post_save, post_delete, pre_save
 from django.dispatch import receiver
 from django.contrib.auth.signals import user_logged_in, user_logged_out
 from django.contrib.auth.models import User
 from .models import ActionLog
-from accounts.models import Profile  # <-- правильно импортируем Profile
+from accounts.models import Profile
+
 
 # ==========================
 # Логирование входа/выхода пользователей
 # ==========================
-
 @receiver(user_logged_in)
 def log_user_login(sender, request, user, **kwargs):
     ActionLog.objects.create(
@@ -31,12 +31,11 @@ def log_user_logout(sender, request, user, **kwargs):
 # ==========================
 # Логирование создания, изменения и удаления моделей
 # ==========================
-
 @receiver(post_save)
 def log_model_save(sender, instance, created, **kwargs):
     if sender.__name__ in ["ActionLog", "Profile"]:
         return
-    if sender._meta.app_label not in ["logs", "accounts", "myapp"]:  # укажи свои приложения
+    if sender._meta.app_label not in ["logs", "accounts", "myapp"]:
         return
 
     ActionLog.objects.create(
@@ -63,9 +62,51 @@ def log_model_delete(sender, instance, **kwargs):
 # ==========================
 # Авто-создание профиля для пользователей
 # ==========================
-
 @receiver(post_save, sender=User)
 def create_user_profile(sender, instance, created, **kwargs):
     if created:
         Profile.objects.get_or_create(user=instance)
+
+# ==========================
+# Логирование изменений пользователя с историей
+# ==========================
+@receiver(pre_save, sender=User)
+def cache_old_user_data(sender, instance, **kwargs):
+    """Сохраняем старые данные пользователя перед сохранением"""
+    if instance.pk:
+        try:
+            old_instance = User.objects.get(pk=instance.pk)
+            instance._old_data = {
+                "first_name": old_instance.first_name,
+                "last_name": old_instance.last_name,
+                "email": old_instance.email,
+            }
+        except User.DoesNotExist:
+            instance._old_data = {}
+    else:
+        instance._old_data = {}
+
+@receiver(post_save, sender=User)
+def log_user_update(sender, instance, created, **kwargs):
+    """Логируем изменения пользователя после сохранения"""
+    if created:
+        # уже создаётся профиль и логируется через create_user_profile
+        return
+
+    old_data = getattr(instance, "_old_data", {})
+    changes = {}
+    for field in ["first_name", "last_name", "email"]:
+        old_value = old_data.get(field)
+        new_value = getattr(instance, field)
+        if old_value != new_value:
+            changes[field] = {"old": old_value, "new": new_value}
+
+    if changes:
+        ActionLog.objects.create(
+            user=instance,
+            action_type="update",
+            description=f"Обновлён пользователь {instance.username}",
+            extra_data=changes
+        )
+
 
