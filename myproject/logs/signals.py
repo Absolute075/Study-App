@@ -1,10 +1,10 @@
 
+from django.contrib.auth.models import User
+from accounts.models import Profile
+from .models import ActionLog
 from django.db.models.signals import post_save, post_delete, pre_save
 from django.dispatch import receiver
 from django.contrib.auth.signals import user_logged_in, user_logged_out
-from django.contrib.auth.models import User
-from .models import ActionLog
-from accounts.models import Profile
 
 
 # ==========================
@@ -35,7 +35,7 @@ def log_user_logout(sender, request, user, **kwargs):
 def log_model_save(sender, instance, created, **kwargs):
     if sender.__name__ in ["ActionLog", "Profile"]:
         return
-    if sender._meta.app_label not in ["logs", "accounts", "myapp"]:
+    if sender._meta.app_label not in ["logs", "accounts", "api"]:  # укажи свои приложения
         return
 
     ActionLog.objects.create(
@@ -49,7 +49,7 @@ def log_model_save(sender, instance, created, **kwargs):
 def log_model_delete(sender, instance, **kwargs):
     if sender.__name__ in ["ActionLog", "Profile"]:
         return
-    if sender._meta.app_label not in ["logs", "accounts", "myapp"]:
+    if sender._meta.app_label not in ["logs", "accounts", "api"]:
         return
 
     ActionLog.objects.create(
@@ -90,7 +90,6 @@ def cache_old_user_data(sender, instance, **kwargs):
 def log_user_update(sender, instance, created, **kwargs):
     """Логируем изменения пользователя после сохранения"""
     if created:
-        # уже создаётся профиль и логируется через create_user_profile
         return
 
     old_data = getattr(instance, "_old_data", {})
@@ -108,5 +107,3 @@ def log_user_update(sender, instance, created, **kwargs):
             description=f"Обновлён пользователь {instance.username}",
             extra_data=changes
         )
-
-
