@@ -7,23 +7,25 @@ from django.contrib.auth.models import User
 from logs.models import ActionLog
 
 
-# ===== Логин =====
+
+# Вход пользователя
 @receiver(user_logged_in)
 def log_user_login(sender, request, user, **kwargs):
     ActionLog.objects.create(
         user=user,
         action_type="login",
-        description=f"Пользователь {user.username} вошёл в систему"
+        description="Пользователь вошёл в систему"
     )
 
-# ===== Логаут =====
+# Выход пользователя
 @receiver(user_logged_out)
 def log_user_logout(sender, request, user, **kwargs):
     ActionLog.objects.create(
         user=user,
         action_type="logout",
-        description=f"Пользователь {user.username} вышел из системы"
+        description="Пользователь вышел из системы"
     )
+
 
 # ===== Создание и изменение пользователя =====
 @receiver(post_save, sender=User)
@@ -50,13 +52,15 @@ def log_user_delete(sender, instance, **kwargs):
         description=f"Пользователь {instance.username} был удалён"
     )
 
-# ===== Сброс или изменение пароля =====
-@receiver(password_change)
-def log_password_change(sender, request, user, **kwargs):
-    ActionLog.objects.create(
-        user=user,
-        action_type="update",
-        description=f"Пользователь {user.username} сменил пароль"
-    )
-
+# Отслеживание смены пароля
+@receiver(pre_save, sender=User)
+def log_password_change(sender, instance, **kwargs):
+    if instance.pk:  # уже существует в базе
+        old_password = User.objects.get(pk=instance.pk).password
+        if old_password != instance.password:
+            ActionLog.objects.create(
+                user=instance,
+                action_type="update",
+                description="Смена пароля"
+            )
 
