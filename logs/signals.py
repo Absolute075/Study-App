@@ -1,70 +1,65 @@
 
-from django.db.models.signals import post_save, post_delete
-from django.dispatch import receiver
+# logs/signals.py
+from django.db.models.signals import post_save, post_delete, pre_save
 from django.contrib.auth.signals import user_logged_in, user_logged_out
+from django.dispatch import receiver
 from django.contrib.auth.models import User
-from .models import ActionLog
-from accounts.models import Profile  # <-- правильно импортируем Profile
+from logs.models import ActionLog
 
-# ==========================
-# Логирование входа/выхода пользователей
-# ==========================
 
+# Вход пользователя
 @receiver(user_logged_in)
 def log_user_login(sender, request, user, **kwargs):
     ActionLog.objects.create(
         user=user,
         action_type="login",
-        description=f"Пользователь {user.username} вошёл в систему",
-        extra_data={"ip": request.META.get('REMOTE_ADDR')}
+        description="Пользователь вошёл в систему"
     )
 
+# Выход пользователя
 @receiver(user_logged_out)
 def log_user_logout(sender, request, user, **kwargs):
     ActionLog.objects.create(
         user=user,
         action_type="logout",
-        description=f"Пользователь {user.username} вышел из системы",
-        extra_data={"ip": request.META.get('REMOTE_ADDR')}
+        description="Пользователь вышел из системы"
     )
 
-# ==========================
-# Логирование создания, изменения и удаления моделей
-# ==========================
 
-@receiver(post_save)
-def log_model_save(sender, instance, created, **kwargs):
-    if sender.__name__ in ["ActionLog", "Profile"]:
-        return
-    if sender._meta.app_label not in ["logs", "accounts", "myapp"]:  # укажи свои приложения
-        return
-
-    ActionLog.objects.create(
-        user=getattr(instance, "user", None),
-        action_type="create" if created else "update",
-        description=f"{'Создан' if created else 'Обновлён'} объект {sender.__name__} (ID: {instance.pk})",
-        extra_data={"model": sender.__name__, "id": instance.pk}
-    )
-
-@receiver(post_delete)
-def log_model_delete(sender, instance, **kwargs):
-    if sender.__name__ in ["ActionLog", "Profile"]:
-        return
-    if sender._meta.app_label not in ["logs", "accounts", "myapp"]:
-        return
-
-    ActionLog.objects.create(
-        user=getattr(instance, "user", None),
-        action_type="delete",
-        description=f"Удалён объект {sender.__name__} (ID: {instance.pk})",
-        extra_data={"model": sender.__name__, "id": instance.pk}
-    )
-
-# ==========================
-# Авто-создание профиля для пользователей
-# ==========================
-
+# ===== Создание и изменение пользователя =====
 @receiver(post_save, sender=User)
-def create_user_profile(sender, instance, created, **kwargs):
+def log_user_create_update(sender, instance, created, **kwargs):
     if created:
-        Profile.objects.create(user=instance)
+        ActionLog.objects.create(
+            user=instance,
+            action_type="create",
+            description=f"Создан новый пользователь: {instance.username}"
+        )
+    else:
+        ActionLog.objects.create(
+            user=instance,
+            action_type="update",
+            description=f"Пользователь {instance.username} был изменён"
+        )
+
+# ===== Удаление пользователя =====
+@receiver(post_delete, sender=User)
+def log_user_delete(sender, instance, **kwargs):
+    ActionLog.objects.create(
+        user=None,
+        action_type="delete",
+        description=f"Пользователь {instance.username} был удалён"
+    )
+
+# Отслеживание смены пароля
+@receiver(pre_save, sender=User)
+def log_password_change(sender, instance, **kwargs):
+    if instance.pk:  # уже существует в базе
+        old_password = User.objects.get(pk=instance.pk).password
+        if old_password != instance.password:
+            ActionLog.objects.create(
+                user=instance,
+                action_type="update",
+                description="Смена пароля"
+            )
+

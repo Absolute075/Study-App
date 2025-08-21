@@ -1,26 +1,21 @@
-from typing import Any
 
 from pathlib import Path
+import os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
-BASE_DIR: Any = Path(__file__).resolve().parent.parent
+BASE_DIR = Path(__file__).resolve().parent.parent
 
+# Static files (CSS, JavaScript, Images)
+STATIC_URL = '/static/'
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 # Quick-start development settings - unsuitable for production
-# See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
-
-# SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = 'django-insecure-zmh04bp-a+fxk%jnd-kg@5kwn=tc)8wwc%pk25cqxjd@sc5_o8'
-
-# SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
-
-ALLOWED_HOSTS = ['192.168.100.145', '127.0.0.1', 'localhost']
-
-
+ALLOWED_HOSTS = ['study-app-a53x.onrender.com']
 
 # Application definition
-
 INSTALLED_APPS = [
     'jazzmin',
     'django.contrib.admin',
@@ -32,13 +27,14 @@ INSTALLED_APPS = [
     'rest_framework',
     'api',
     'accounts',
-    'logs',
-
+    'logs.apps.LogsConfig',
+    'userlogs',
 
 ]
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -46,20 +42,10 @@ MIDDLEWARE = [
     'accounts.middleware.BlockedUserMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-
-    # твой middleware
     'middleware.mymiddleware.MyMiddleware',
 ]
 
-
-
 ROOT_URLCONF = 'myproject.urls'
-
-
-
-from pathlib import Path
-
-BASE_DIR = Path(__file__).resolve().parent.parent
 
 TEMPLATES = [
     {
@@ -77,116 +63,72 @@ TEMPLATES = [
     },
 ]
 
+WSGI_APPLICATION = 'myproject.wsgi.application'
+
+# Database
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'postgres',  # имя базы в Supabase
+        'USER': 'postgres.cozecdjfnbhdndcivcvs',  # пользователь базы
+        'PASSWORD': 'star4536446',  # пароль пользователя
+        'HOST': 'aws-1-eu-central-1.pooler.supabase.com',  # Pooler host
+        'PORT': '6543',  # Pooler port
+    }
+}
 
 
 
 
+# Password validation
+AUTH_PASSWORD_VALIDATORS = [
+    {'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator'},
+    {'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator'},
+    {'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator'},
+    {'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator'},
+]
+
+# Internationalization
+LANGUAGE_CODE = 'ru'
+TIME_ZONE = 'Asia/Tashkent'
+USE_I18N = True
+USE_TZ = True
+
+# Default primary key field type
+DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+# Jazzmin settings
 JAZZMIN_SETTINGS = {
     "site_title": "Учебная панель ProLearner",
     "site_header": "Панель администратора ProLearner",
     "site_brand": "ProLearner",
     "welcome_sign": "Добро пожаловать в панель администратора ProLearner!",
     "site_footer": "© 2025 ProLearner — Все права защищены",
-
     "search_model": ["auth.User", "auth.Group"],
-
     "icons": {
         "auth": "fas fa-users",
         "auth.user": "fas fa-user-graduate",
         "auth.group": "fas fa-chalkboard-teacher",
     },
-
     "menu": [
-    {"model": "admin.logentry", "name": "Логи действий (Системные)", "icon": "fas fa-history"},
-    {"model": "logs.actionlog", "name": "Логи действий (Пользовательские)", "icon": "fas fa-clipboard-list"},
-    {
-        "name": "Дашборд",
-        "url": "/admin/dashboard/",
-        "icon": "fas fa-chart-bar",
-        "permissions": ["is_superuser"],  # Добавляем, чтобы видели только админы
-    },
-],
-
-
+        {"model": "admin.logentry", "name": "Логи действий (Системные)", "icon": "fas fa-history"},
+        {"model": "logs.actionlog", "name": "Логи действий (Пользовательские)", "icon": "fas fa-clipboard-list"},
+        {
+            "name": "Дашборд",
+            "url": "/admin/dashboard/",
+            "icon": "fas fa-chart-bar",
+            "permissions": ["is_superuser"],
+        },
+    ],
     "order_with_respect_to": ["auth", "courses", "grades"],
-
     "theme": "flatly",
-
     "custom_links": {
         "auth": [
-            {
-                "name": "Добавить студента",
-                "url": "/admin/auth/user/add/",
-                "icon": "fas fa-user-plus",
-            },
-            {
-                "name": "Добавить группу",
-                "url": "/admin/auth/group/add/",
-                "icon": "fas fa-plus-circle",
-            },
+            {"name": "Добавить студента", "url": "/admin/auth/user/add/", "icon": "fas fa-user-plus"},
+            {"name": "Добавить группу", "url": "/admin/auth/group/add/", "icon": "fas fa-plus-circle"},
         ]
     },
 }
 
-
-
 LOGIN_REDIRECT_URL = '/admin/'
 
-
-
-WSGI_APPLICATION = 'myproject.wsgi.application'
-
-
-# Database
-# https://docs.djangoproject.com/en/5.2/ref/settings/#databases
-
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
-    }
-}
-
-
-# Password validation
-# https://docs.djangoproject.com/en/5.2/ref/settings/#auth-password-validators
-
-AUTH_PASSWORD_VALIDATORS = [
-    {
-        'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
-    },
-]
-
-
-
-
-# Internationalization
-# https://docs.djangoproject.com/en/5.2/topics/i18n/
-
-LANGUAGE_CODE = 'ru'
-
-TIME_ZONE = 'Asia/Tashkent'
-
-USE_I18N = True
-
-USE_TZ = True
-
-
-# Static files (CSS, JavaScript, Images)
-# https://docs.djangoproject.com/en/5.2/howto/static-files/
-
-STATIC_URL = 'static/'
-
-# Default primary key field type
-# https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
-
-DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
