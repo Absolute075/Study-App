@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "333069425266",
+    "project_id": "edufyauth",
+    "storage_bucket": "edufyauth.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:333069425266:android:7f421296f459751af280eb",
+        "android_client_info": {
+          "package_name": "com.prolearner.app.prolearner_study_app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC3hXD42LgVjgm-Zp4uNYVtB5Wxaa3lYas"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

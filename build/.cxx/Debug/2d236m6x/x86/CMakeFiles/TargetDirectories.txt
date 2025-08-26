@@ -1,0 +1,2 @@
+D:/Study_App/build/.cxx/Debug/2d236m6x/x86/CMakeFiles/edit_cache.dir
+D:/Study_App/build/.cxx/Debug/2d236m6x/x86/CMakeFiles/rebuild_cache.dir
