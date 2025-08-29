@@ -9,6 +9,7 @@ import 'register_screen.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
+
   @override
   _LoginScreenState createState() => _LoginScreenState();
 }
@@ -26,23 +27,20 @@ class _LoginScreenState extends State<LoginScreen> {
           Positioned.fill(
             child: Image.asset(
               "assets/images/login_bg.jpg",
-              fit: BoxFit.cover, // растягивает под экран
+              fit: BoxFit.cover, // растягиваем под экран
             ),
           ),
 
-          // Поля + кнопки
+          // Поля и кнопки поверх фона
           Center(
             child: SingleChildScrollView(
-              child: Container(
-                padding: const EdgeInsets.all(24),
-                decoration: BoxDecoration(
-                  color: Colors.white.withOpacity(0.85),
-                  borderRadius: BorderRadius.circular(20),
-                ),
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 24),
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    Image.asset("assets/images/logo.png", height: 80),
+                    // Если нужно, можно оставить логотип
+                    // Image.asset("assets/images/logo.png", height: 80),
                     const SizedBox(height: 20),
                     EmailField(controller: emailController),
                     const SizedBox(height: 16),
@@ -83,6 +81,6 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   Future<void> _loginWithGoogle() async {
-    // Логика Google Sign-In
+    // Реализуй логику Google Sign-In
   }
 }
