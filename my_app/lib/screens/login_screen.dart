@@ -4,6 +4,8 @@ import '../widgets/login_screen/password_field.dart';
 import '../widgets/login_screen/login_button.dart';
 import '../widgets/login_screen/google_sign_in_button.dart';
 import '../widgets/login_screen/forgot_password.dart';
+import 'register_screen.dart';
+
 
 class LoginScreen extends StatelessWidget {
   const LoginScreen({super.key});
@@ -114,6 +116,24 @@ class LoginScreen extends StatelessWidget {
                     ),
                     const SizedBox(height: 16),
                     const GoogleSignInButton(),
+                    const SizedBox(height: 16),
+                    // Кнопка Sign Up
+                    TextButton(
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => const RegisterScreen()),
+                        );
+                      },
+                      child: const Text(
+                        "Don't have an account? Sign Up",
+                        style: TextStyle(
+                          color: Colors.indigo,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
                   ],
                 ),
               ),
@@ -124,3 +144,4 @@ class LoginScreen extends StatelessWidget {
     );
   }
 }
+
