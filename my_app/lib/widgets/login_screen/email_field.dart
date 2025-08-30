@@ -1,19 +1,25 @@
 import 'package:flutter/material.dart';
 
 class EmailField extends StatelessWidget {
-  final TextEditingController controller;
-  const EmailField({super.key, required this.controller});
+  const EmailField({super.key});
 
   @override
   Widget build(BuildContext context) {
     return TextField(
-      controller: controller,
-      decoration: const InputDecoration(
-        labelText: "Email",
-        prefixIcon: Icon(Icons.email),
-        border: OutlineInputBorder(),
+      decoration: InputDecoration(
+        prefixIcon: const Icon(Icons.email, color: Colors.grey),
+        hintText: "Enter your email",
+        filled: true,
+        fillColor: Colors.white,
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12),
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderSide: const BorderSide(color: Colors.indigo),
+          borderRadius: BorderRadius.circular(12),
+        ),
       ),
+      keyboardType: TextInputType.emailAddress,
     );
   }
 }
-

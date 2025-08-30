@@ -1,63 +1,119 @@
-
 import 'package:flutter/material.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:my_app/widgets/login_screen/email_field.dart';
-import 'package:my_app/widgets/login_screen/password_field.dart';
-import 'package:my_app/widgets/login_screen/login_button.dart';
-import 'package:my_app/widgets/login_screen/google_sign_in_button.dart';
-import 'register_screen.dart';
+import '../widgets/login_screen/email_field.dart';
+import '../widgets/login_screen/password_field.dart';
+import '../widgets/login_screen/login_button.dart';
+import '../widgets/login_screen/google_sign_in_button.dart';
+import '../widgets/login_screen/forgot_password.dart';
 
-class LoginScreen extends StatefulWidget {
+class LoginScreen extends StatelessWidget {
   const LoginScreen({super.key});
-
-  @override
-  _LoginScreenState createState() => _LoginScreenState();
-}
-
-class _LoginScreenState extends State<LoginScreen> {
-  final emailController = TextEditingController();
-  final passwordController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: Stack(
         children: [
-          // Фон на весь экран
-          Positioned.fill(
-            child: Image.asset(
-              "assets/images/login_bg.jpg",
-              fit: BoxFit.cover, // растягиваем под экран
+          // Фон с градиентами и размытиями
+          Container(
+            decoration: const BoxDecoration(
+              gradient: LinearGradient(
+                colors: [Color(0xFFE0F2FF), Color(0xFFD6E1FF)],
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+              ),
             ),
           ),
-
-          // Поля и кнопки поверх фона
+          // Размытые круги
+          Positioned(
+            top: -100,
+            right: -100,
+            child: Container(
+              width: 200,
+              height: 200,
+              decoration: BoxDecoration(
+                color: Colors.blue.withOpacity(0.3),
+                shape: BoxShape.circle,
+              ),
+            ),
+          ),
+          Positioned(
+            bottom: -100,
+            left: -100,
+            child: Container(
+              width: 200,
+              height: 200,
+              decoration: BoxDecoration(
+                color: Colors.indigo.withOpacity(0.2),
+                shape: BoxShape.circle,
+              ),
+            ),
+          ),
+          // Основной контент
           Center(
             child: SingleChildScrollView(
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 24),
+              child: Container(
+                padding: const EdgeInsets.all(24),
+                margin: const EdgeInsets.symmetric(horizontal: 24),
+                decoration: BoxDecoration(
+                  color: Colors.white.withOpacity(0.9),
+                  borderRadius: BorderRadius.circular(24),
+                  boxShadow: const [
+                    BoxShadow(
+                      color: Colors.black12,
+                      blurRadius: 20,
+                      offset: Offset(0, 10),
+                    ),
+                  ],
+                ),
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    // Если нужно, можно оставить логотип
-                    // Image.asset("assets/images/logo.png", height: 80),
-                    const SizedBox(height: 20),
-                    EmailField(controller: emailController),
-                    const SizedBox(height: 16),
-                    PasswordField(controller: passwordController),
-                    const SizedBox(height: 16),
-                    LoginButton(onPressed: _loginWithEmail),
-                    const SizedBox(height: 12),
-                    GoogleSignInButton(onPressed: _loginWithGoogle),
-                    const SizedBox(height: 16),
-                    TextButton(
-                      onPressed: () => Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => const RegisterScreen()),
+                    Container(
+                      width: 64,
+                      height: 64,
+                      decoration: BoxDecoration(
+                        color: Colors.indigo,
+                        borderRadius: BorderRadius.circular(16),
                       ),
-                      child: const Text("Create an account"),
+                      child: const Icon(
+                        Icons.school,
+                        color: Colors.white,
+                        size: 32,
+                      ),
                     ),
+                    const SizedBox(height: 16),
+                    const Text(
+                      "Sign in to Edufy",
+                      style: TextStyle(
+                        fontSize: 24,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.black87,
+                      ),
+                    ),
+                    const SizedBox(height: 32),
+                    const EmailField(),
+                    const SizedBox(height: 16),
+                    const PasswordField(),
+                    const SizedBox(height: 16),
+                    const ForgotPasswordText(),
+                    const SizedBox(height: 16),
+                    const LoginButton(),
+                    const SizedBox(height: 16),
+                    Row(
+                      children: const [
+                        Expanded(child: Divider(color: Colors.grey)),
+                        Padding(
+                          padding: EdgeInsets.symmetric(horizontal: 8),
+                          child: Text(
+                            "OR",
+                            style: TextStyle(color: Colors.grey),
+                          ),
+                        ),
+                        Expanded(child: Divider(color: Colors.grey)),
+                      ],
+                    ),
+                    const SizedBox(height: 16),
+                    const GoogleSignInButton(),
                   ],
                 ),
               ),
@@ -66,21 +122,5 @@ class _LoginScreenState extends State<LoginScreen> {
         ],
       ),
     );
-  }
-
-  Future<void> _loginWithEmail() async {
-    try {
-      await FirebaseAuth.instance.signInWithEmailAndPassword(
-        email: emailController.text.trim(),
-        password: passwordController.text.trim(),
-      );
-    } on FirebaseAuthException catch (e) {
-      ScaffoldMessenger.of(context)
-          .showSnackBar(SnackBar(content: Text(e.message ?? 'Login failed')));
-    }
-  }
-
-  Future<void> _loginWithGoogle() async {
-    // Реализуй логику Google Sign-In
   }
 }
