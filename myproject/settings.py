@@ -14,6 +14,10 @@ STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 SECRET_KEY = 'django-insecure-zmh04bp-a+fxk%jnd-kg@5kwn=tc)8wwc%pk25cqxjd@sc5_o8'
 DEBUG = True
 ALLOWED_HOSTS = ['study-app-a53x.onrender.com']
+CSRF_TRUSTED_ORIGINS = [
+    'https://study-app-a53x.onrender.com',
+]
+
 
 # Application definition
 INSTALLED_APPS = [

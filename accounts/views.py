@@ -12,7 +12,6 @@ def blocked_view(request):
     return render(request, 'accounts/blocked.html')
 
 
-# Новый класс для регистрации через API
 @method_decorator(csrf_exempt, name='dispatch')
 class RegisterView(APIView):
     def post(self, request):
