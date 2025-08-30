@@ -1,0 +1,42 @@
+# Python
+*.pyc
+__pycache__/
+*.pyo
+*.pyd
+*.swp
+*.log
+
+# Django
+db.sqlite3
+media/
+staticfiles/
+.env
+*.pot
+*.py[cod]
+
+# IDE / Editors
+.vscode/
+.idea/
+*.iml
+*.ipr
+*.iws
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Flutter / Android Studio (оставляем твои)
+**/doc/api/
+**/ios/Flutter/.last_build_id
+.dart_tool/
+.flutter-plugins
+.flutter-plugins-dependencies
+.pub/
+build/
+android/app/debug
+android/app/profile
+android/app/release
+
+#путь к WSGI-приложению
+web: gunicorn myproject.wsgi:application
+

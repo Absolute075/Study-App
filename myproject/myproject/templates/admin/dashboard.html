@@ -1,0 +1,32 @@
+{% extends "admin/base_site.html" %}
+{% load static %}
+
+{% block content %}
+<h1>Дашборд активности за 7 дней</h1>
+<canvas id="logsChart" width="600" height="300"></canvas>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+const ctx = document.getElementById('logsChart').getContext('2d');
+const logsChart = new Chart(ctx, {
+    type: 'line',
+    data: {
+        labels: {{ dates|safe }},
+        datasets: [{
+            label: 'Количество логов',
+            data: {{ logs_by_date|safe }},
+            backgroundColor: 'rgba(54, 162, 235, 0.2)',
+            borderColor: 'rgba(54, 162, 235, 1)',
+            borderWidth: 2,
+            fill: true,
+            tension: 0.3,
+        }]
+    },
+    options: {
+        scales: {
+            y: { beginAtZero: true, stepSize: 1 }
+        }
+    }
+});
+</script>
+{% endblock %}
