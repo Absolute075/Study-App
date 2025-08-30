@@ -12,7 +12,7 @@ STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 # Quick-start development settings - unsuitable for production
 SECRET_KEY = 'django-insecure-zmh04bp-a+fxk%jnd-kg@5kwn=tc)8wwc%pk25cqxjd@sc5_o8'
-DEBUG = True
+DEBUG = False
 ALLOWED_HOSTS = ['study-app-a53x.onrender.com']
 CSRF_TRUSTED_ORIGINS = [
     'https://study-app-a53x.onrender.com',
