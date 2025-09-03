@@ -16,6 +16,8 @@ ALLOWED_HOSTS = ['study-app-a53x.onrender.com', 'www.study-app-a53x.onrender.com
 CSRF_TRUSTED_ORIGINS = [
     'https://study-app-a53x.onrender.com',
     'https://www.study-app-a53x.onrender.com',
+    'http://study-app-a53x.onrender.com',
+    'http://www.study-app-a53x.onrender.com',
 ]
 
 # Application definition
@@ -44,7 +46,7 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'middleware.mymiddleware.MyMiddleware',
-    # 'django.middleware.csrf.CsrfViewMiddleware',  # Отключено для теста, вернуть обратно после теста
+    'django.middleware.csrf.CsrfViewMiddleware',
 ]
 
 ROOT_URLCONF = 'myproject.urls'
@@ -131,14 +133,3 @@ JAZZMIN_SETTINGS = {
 
 LOGIN_REDIRECT_URL = '/admin/'
 
-# CSRF settings
-CSRF_COOKIE_SECURE = True  # Использовать только по HTTPS
-CSRF_COOKIE_HTTPONLY = True  # Защита от JS доступа
-CSRF_COOKIE_NAME = 'csrftoken'
-
-# Session settings
-SESSION_COOKIE_SECURE = True  # Использовать только по HTTPS
-SESSION_COOKIE_HTTPONLY = True  # Защита от JS доступа
-USE_X_FORWARDED_HOST = True
-SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
-SECURE_SSL_REDIRECT = True
